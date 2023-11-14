@@ -38,6 +38,30 @@ public class PersonService {
         return persons;
     }
 
+    public void deletePerson(String id){
+        logger.info("Deleting on person");
+    }
+
+    public Person create(Person person){
+        logger.info("Starting create person");
+
+        Person newPerson = new Person();
+        newPerson.setId(counter.incrementAndGet());
+        newPerson.setFirstName(person.getFirstName());
+        newPerson.setLastName(person.getLastName());
+        newPerson.setAddress(person.getAddress());
+        newPerson.setGender(person.getGender());
+
+        logger.info("Success create person");
+
+        return newPerson;
+    }
+
+    public Person updatePerson(Person person){
+        logger.info("Updating person");
+        return person;
+    }
+
     private Person mockPerson(int i) {
         Person person = new Person();
 
