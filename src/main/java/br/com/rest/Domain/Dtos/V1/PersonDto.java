@@ -1,5 +1,8 @@
 package br.com.rest.Domain.Dtos.V1;
 
+import br.com.rest.Domain.Dtos.V2.PersonV2Dto;
+import br.com.rest.Domain.Entities.Person;
+
 import java.io.Serial;
 import java.io.Serializable;
 

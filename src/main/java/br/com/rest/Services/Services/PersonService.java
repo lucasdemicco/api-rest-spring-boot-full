@@ -3,13 +3,14 @@ package br.com.rest.Services.Services;
 import br.com.rest.Domain.Dtos.V1.PersonDto;
 import br.com.rest.Domain.Dtos.V2.PersonV2Dto;
 import br.com.rest.Domain.Entities.Person;
-import br.com.rest.Domain.Mapper.DozerMapper;
+import br.com.rest.Domain.Mapper.PersonParseObjectHelper;
 import br.com.rest.Handler.Exceptions.ResourceNotFoundException;
 import br.com.rest.Repositories.PersonRepository;
 import br.com.rest.Services.Interfaces.PersonInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -24,14 +25,19 @@ public class PersonService implements PersonInterface {
     @Override
     public PersonDto findById(String id){
         logger.info("Finding one person");
-        return DozerMapper.parseObject(identifyNullPerson(Long.parseLong(id)), PersonDto.class);
+        return PersonParseObjectHelper.mapToPersonDto(identifyNullPerson(Long.parseLong(id)));
     }
 
     @Override
     public List<PersonDto> findAll(){
         logger.info("Finding list persons");
-        List<Person> listPersons = personRepository.findAll();
-        return DozerMapper.parseListObject(listPersons, PersonDto.class);
+        List<PersonDto> returnList = new ArrayList<>();
+        personRepository.findAll()
+                .stream()
+                .toList()
+                .forEach(person -> returnList.add(PersonParseObjectHelper.mapToPersonDto(person)));
+
+        return returnList;
     }
 
     @Override
@@ -44,7 +50,7 @@ public class PersonService implements PersonInterface {
     public PersonDto create(PersonDto personDto){
         logger.info("Starting create person");
 
-        Person newPerson = DozerMapper.parseObject(personDto, Person.class);
+        Person newPerson = PersonParseObjectHelper.mapToEntity(personDto);
         personRepository.save(newPerson);
 
         logger.info("Success create person");
@@ -56,7 +62,7 @@ public class PersonService implements PersonInterface {
     public PersonV2Dto newCreatePerson(PersonV2Dto personDto) {
         logger.info("Starting create person");
 
-        Person newPerson = DozerMapper.parseObject(personDto, Person.class);
+        Person newPerson = PersonParseObjectHelper.mapToEntityV2(personDto);
         personRepository.save(newPerson);
 
         logger.info("Success create person");
@@ -77,7 +83,7 @@ public class PersonService implements PersonInterface {
 
         personRepository.save(newPerson);
 
-        return DozerMapper.parseObject(newPerson, PersonDto.class);
+        return PersonParseObjectHelper.mapToPersonDto(newPerson);
     }
 
     private Person identifyNullPerson(Long id) {
