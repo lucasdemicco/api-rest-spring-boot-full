@@ -1,6 +1,8 @@
 package br.com.rest.Services.Services;
 
+import br.com.rest.Domain.Dtos.PersonDto;
 import br.com.rest.Domain.Entities.Person;
+import br.com.rest.Domain.Mapper.DozerMapper;
 import br.com.rest.Handler.Exceptions.ResourceNotFoundException;
 import br.com.rest.Repositories.PersonRepository;
 import br.com.rest.Services.Interfaces.PersonInterface;
@@ -8,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
@@ -16,58 +17,54 @@ public class PersonService implements PersonInterface {
 
     @Autowired
     PersonRepository personRepository;
+
     private final Logger logger = Logger.getLogger(PersonService.class.getName());
 
     @Override
-    public Person findById(String id){
+    public PersonDto findById(String id){
         logger.info("Finding one person");
-        return identifyNullPerson(Long.parseLong(id));
+        return DozerMapper.parseObject(identifyNullPerson(Long.parseLong(id)), PersonDto.class);
     }
 
     @Override
-    public List<Person> findAll(){
+    public List<PersonDto> findAll(){
         logger.info("Finding list persons");
-        return personRepository.findAll();
+        List<Person> listPersons = personRepository.findAll();
+        return DozerMapper.parseListObject(listPersons, PersonDto.class);
     }
 
     @Override
     public void deletePerson(String id){
         logger.info("Deleting on person");
-        Person person = identifyNullPerson(Long.parseLong(id));
-        personRepository.delete(person);
+        personRepository.delete(identifyNullPerson(Long.parseLong(id)));
     }
 
     @Override
-    public Person create(Person person){
+    public PersonDto create(PersonDto personDto){
         logger.info("Starting create person");
 
-        Person newPerson = new Person();
-        newPerson.setFirstName(person.getFirstName());
-        newPerson.setLastName(person.getLastName());
-        newPerson.setAddress(person.getAddress());
-        newPerson.setGender(person.getGender());
-
+        Person newPerson = DozerMapper.parseObject(personDto, Person.class);
         personRepository.save(newPerson);
 
         logger.info("Success create person");
 
-        return newPerson;
+        return personDto;
     }
 
     @Override
-    public Person updatePerson(Long id, Person person){
+    public PersonDto updatePerson(Long id, PersonDto personDto){
         logger.info("Updating person");
 
         Person newPerson = identifyNullPerson(id);
 
-        newPerson.setFirstName(person.getFirstName());
-        newPerson.setLastName(person.getLastName());
-        newPerson.setAddress(person.getAddress());
-        newPerson.setGender(person.getGender());
+        newPerson.setFirstName(personDto.getFirstName());
+        newPerson.setLastName(personDto.getLastName());
+        newPerson.setAddress(personDto.getAddress());
+        newPerson.setGender(personDto.getGender());
 
         personRepository.save(newPerson);
 
-        return person;
+        return DozerMapper.parseObject(newPerson, PersonDto.class);
     }
 
     private Person identifyNullPerson(Long id) {
