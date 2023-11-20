@@ -33,11 +33,13 @@ public class PersonController {
         return personService.create(person);
     }
 
-    @PutMapping(value = "/updatePerson",
+    @PutMapping(value = "/updatePerson/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Person updatePerson(@RequestBody(required = true) Person person){
-        return personService.updatePerson(person);
+    public Person updatePerson(
+            @PathVariable(value = "id") Long id,
+            @RequestBody(required = true) Person person){
+        return personService.updatePerson(id, person);
     }
 
     @DeleteMapping("/deletePerson/{id}")

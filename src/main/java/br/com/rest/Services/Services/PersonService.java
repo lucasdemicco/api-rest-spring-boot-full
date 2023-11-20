@@ -1,77 +1,82 @@
 package br.com.rest.Services.Services;
 
 import br.com.rest.Domain.Entities.Person;
+import br.com.rest.Handler.Exceptions.ResourceNotFoundException;
+import br.com.rest.Repositories.PersonRepository;
+import br.com.rest.Services.Interfaces.PersonInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
-public class PersonService {
+public class PersonService implements PersonInterface {
 
-    private final AtomicLong counter = new AtomicLong();
+    @Autowired
+    PersonRepository personRepository;
     private final Logger logger = Logger.getLogger(PersonService.class.getName());
 
+    @Override
     public Person findById(String id){
         logger.info("Finding one person");
-
-        Person person = new Person();
-        person.setId(counter.get());
-        person.setFirstName("Mock");
-        person.setLastName("Mockzinho");
-        person.setAddress("Rua dos Mocks , 123");
-        person.setGender("Male");
-
-        return person;
+        return identifyNullPerson(Long.parseLong(id));
     }
 
+    @Override
     public List<Person> findAll(){
         logger.info("Finding list persons");
-        List<Person> persons = new ArrayList<Person>();
-
-        for (int i = 0; i < 8; i++){
-            persons.add(mockPerson(i));
-        }
-
-        return persons;
+        return personRepository.findAll();
     }
 
+    @Override
     public void deletePerson(String id){
         logger.info("Deleting on person");
+        Person person = identifyNullPerson(Long.parseLong(id));
+        personRepository.delete(person);
     }
 
+    @Override
     public Person create(Person person){
         logger.info("Starting create person");
 
         Person newPerson = new Person();
-        newPerson.setId(counter.incrementAndGet());
         newPerson.setFirstName(person.getFirstName());
         newPerson.setLastName(person.getLastName());
         newPerson.setAddress(person.getAddress());
         newPerson.setGender(person.getGender());
+
+        personRepository.save(newPerson);
 
         logger.info("Success create person");
 
         return newPerson;
     }
 
-    public Person updatePerson(Person person){
+    @Override
+    public Person updatePerson(Long id, Person person){
         logger.info("Updating person");
+
+        Person newPerson = identifyNullPerson(id);
+
+        newPerson.setFirstName(person.getFirstName());
+        newPerson.setLastName(person.getLastName());
+        newPerson.setAddress(person.getAddress());
+        newPerson.setGender(person.getGender());
+
+        personRepository.save(newPerson);
+
         return person;
     }
 
-    private Person mockPerson(int i) {
-        Person person = new Person();
+    private Person identifyNullPerson(Long id) {
+        Optional<Person> person = personRepository.findById(id);
 
-        person.setId(counter.incrementAndGet());
-        person.setFirstName("Name " + i);
-        person.setLastName("Last Name " + i);
-        person.setAddress("Rua dos Mocks " + i);
-        person.setGender("Male " + i);
+        if(person.isEmpty())
+            throw new ResourceNotFoundException("Not found person by id");
 
-        return person;
+        return person.get();
     }
 
 }
