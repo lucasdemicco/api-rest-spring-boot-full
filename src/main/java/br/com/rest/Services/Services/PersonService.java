@@ -71,12 +71,7 @@ public class PersonService implements PersonInterface {
     }
 
     private Person identifyNullPerson(Long id) {
-        Optional<Person> person = personRepository.findById(id);
-
-        if(person.isEmpty())
-            throw new ResourceNotFoundException("Not found person by id");
-
-        return person.get();
+        return personRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found person by id"));
     }
-
 }
