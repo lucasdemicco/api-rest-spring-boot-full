@@ -1,7 +1,7 @@
 package br.com.rest.Controller;
 
-import br.com.rest.Domain.Dtos.PersonDto;
-import br.com.rest.Domain.Entities.Person;
+import br.com.rest.Domain.Dtos.V1.PersonDto;
+import br.com.rest.Domain.Dtos.V2.PersonV2Dto;
 import br.com.rest.Services.Services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -32,6 +32,14 @@ public class PersonController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public PersonDto createPerson(@RequestBody(required = true) PersonDto person){
         return personService.create(person);
+    }
+
+    @PostMapping(
+            value = "/createPerson/v2",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public PersonV2Dto createPerson(@RequestBody(required = true) PersonV2Dto person){
+        return personService.newCreatePerson(person);
     }
 
     @PutMapping(value = "/updatePerson/{id}",

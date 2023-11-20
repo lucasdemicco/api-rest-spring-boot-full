@@ -1,6 +1,11 @@
-package br.com.rest.Domain.Dtos;
+package br.com.rest.Domain.Dtos.V1;
 
-public class PersonDto {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class PersonDto implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private Long id;
 
     private String firstName;

@@ -1,6 +1,7 @@
 package br.com.rest.Services.Services;
 
-import br.com.rest.Domain.Dtos.PersonDto;
+import br.com.rest.Domain.Dtos.V1.PersonDto;
+import br.com.rest.Domain.Dtos.V2.PersonV2Dto;
 import br.com.rest.Domain.Entities.Person;
 import br.com.rest.Domain.Mapper.DozerMapper;
 import br.com.rest.Handler.Exceptions.ResourceNotFoundException;
@@ -41,6 +42,18 @@ public class PersonService implements PersonInterface {
 
     @Override
     public PersonDto create(PersonDto personDto){
+        logger.info("Starting create person");
+
+        Person newPerson = DozerMapper.parseObject(personDto, Person.class);
+        personRepository.save(newPerson);
+
+        logger.info("Success create person");
+
+        return personDto;
+    }
+
+    @Override
+    public PersonV2Dto newCreatePerson(PersonV2Dto personDto) {
         logger.info("Starting create person");
 
         Person newPerson = DozerMapper.parseObject(personDto, Person.class);

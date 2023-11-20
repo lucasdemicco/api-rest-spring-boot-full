@@ -1,9 +1,11 @@
 package br.com.rest.Domain.Entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -28,6 +30,17 @@ public class Person implements Serializable {
 
     @Column(nullable = false, length = 6)
     private String gender;
+
+    @Column(nullable = true, length = 50)
+    private String birthDay;
+
+    public String getBithDay() {
+        return birthDay;
+    }
+
+    public void setBithDay(String bithDay) {
+        this.birthDay = bithDay;
+    }
 
     public Person(){}
 
@@ -76,11 +89,14 @@ public class Person implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(id, person.id) && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName) && Objects.equals(address, person.address) && Objects.equals(gender, person.gender);
+        return Objects.equals(id, person.id) && Objects.equals(firstName, person.firstName)
+                && Objects.equals(lastName, person.lastName) && Objects.equals(address, person.address)
+                && Objects.equals(gender, person.gender)
+                && Objects.equals(birthDay, person.birthDay);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, address, gender);
+        return Objects.hash(id, firstName, lastName, address, gender, birthDay);
     }
 }

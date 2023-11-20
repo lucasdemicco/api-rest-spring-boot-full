@@ -1,6 +1,6 @@
 package br.com.rest.Tests.UnitTests.Mapper;
 
-import br.com.rest.Domain.Dtos.PersonDto;
+import br.com.rest.Domain.Dtos.V1.PersonDto;
 import br.com.rest.Domain.Entities.Person;
 import br.com.rest.Domain.Mapper.DozerMapper;
 import br.com.rest.Tests.UnitTests.Mocks.MockPerson;
