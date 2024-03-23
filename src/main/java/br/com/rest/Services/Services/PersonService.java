@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 @Service
 public class PersonService implements PersonInterface {
 
+    private static final String STRING_EMPTY_WITH_SPACE = " ";
+
     @Autowired
     PersonRepository personRepository;
 
@@ -25,10 +27,17 @@ public class PersonService implements PersonInterface {
     @Override
     public String getPersonName(Long id){
         logger.info("Iniciando busca de nome de usuário por Id");
+
+        StringBuilder builder = new StringBuilder();
+
         return personRepository
                 .findById(id)
                 .stream()
-                .map(x -> x.getFirstName() + x.getLastName())
+                .map(x ->
+                        String.format("Nome completo: %s",
+                                builder.append(x.getFirstName()),
+                                builder.append(STRING_EMPTY_WITH_SPACE),
+                                builder.append(x.getLastName())))
                 .findFirst().orElse("Usuário não identificado");
     }
 
