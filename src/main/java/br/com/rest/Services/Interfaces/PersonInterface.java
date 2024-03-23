@@ -12,4 +12,5 @@ public interface PersonInterface {
     PersonDto newCreatePerson(PersonV2Dto personDto);
     PersonDto updatePerson(Long id, PersonDto personDto);
     void deletePerson(String id);
+    String getPersonName(Long id);
 }

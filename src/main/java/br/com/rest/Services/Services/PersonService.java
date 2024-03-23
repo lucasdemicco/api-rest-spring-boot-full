@@ -23,6 +23,16 @@ public class PersonService implements PersonInterface {
     private final Logger logger = Logger.getLogger(PersonService.class.getName());
 
     @Override
+    public String getPersonName(Long id){
+        logger.info("Iniciando busca de nome de usuário por Id");
+        return personRepository
+                .findById(id)
+                .stream()
+                .map(x -> x.getFirstName() + x.getLastName())
+                .findFirst().orElse("Usuário não identificado");
+    }
+
+    @Override
     public PersonDto findById(String id){
         logger.info("Finding one person");
         return PersonParseObjectHelper.mapToPersonDto(identifyNullPerson(Long.parseLong(id)));

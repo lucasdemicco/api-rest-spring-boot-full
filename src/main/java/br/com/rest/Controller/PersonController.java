@@ -16,6 +16,11 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
+    @GetMapping(value = "/personName/{id}")
+    public String getPersonName(@PathVariable("id") Long id){
+        return personService.getPersonName(id);
+    }
+
     @GetMapping(value = "/findById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public PersonDto retrievePersonById(@PathVariable("id") String id){
         return personService.findById(id);
@@ -34,16 +39,13 @@ public class PersonController {
         return personService.create(person);
     }
 
-    @PostMapping(
-            value = "/createPerson/v2",
-            produces = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/createPerson/v2", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public PersonV2Dto createPerson(@RequestBody(required = true) PersonV2Dto person){
         return personService.newCreatePerson(person);
     }
 
-    @PutMapping(value = "/updatePerson/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(value = "/updatePerson/{id}", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public PersonDto updatePerson(
             @PathVariable(value = "id") Long id,
