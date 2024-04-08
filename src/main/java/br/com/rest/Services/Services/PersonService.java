@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static java.lang.String.format;
+
 @Service
 public class PersonService implements PersonInterface {
 
@@ -34,7 +36,7 @@ public class PersonService implements PersonInterface {
                 .findById(id)
                 .stream()
                 .map(x ->
-                        String.format("Nome completo: %s",
+                        format("Nome completo: %s",
                                 builder.append(x.getFirstName()),
                                 builder.append(STRING_EMPTY_WITH_SPACE),
                                 builder.append(x.getLastName())))
