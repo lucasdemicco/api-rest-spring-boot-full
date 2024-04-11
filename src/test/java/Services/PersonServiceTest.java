@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,6 +41,7 @@ public class PersonServiceTest {
 
     @Test
     void testFindAll(){
+        //Given
         List<Person> entityList = new ArrayList<Person>();
 
         personMock.mockListPerson()
@@ -47,12 +49,29 @@ public class PersonServiceTest {
                 .toList()
                 .forEach(x -> entityList.add(PersonParseObjectHelper.mapToEntity(x)));
 
-
         when(repository.findAll()).thenReturn(entityList);
 
+        //When
         List<PersonDto> findAllPersons = personService.findAll();
 
+        //Then
         assertNotNull(findAllPersons);
         assertEquals(10, findAllPersons.size());
+    }
+
+    @Test
+    void  testFindById(){
+        // Given
+        long id = 1L;
+        Person entity = new Person(); // Assume YourEntity is your entity class
+        entity.setId(id);
+        when(repository.findById(id)).thenReturn(Optional.of(entity));
+
+        // When
+        PersonDto result = personService.findById(String.valueOf(id));
+
+        // Then
+        assertNotNull(result);
+        assertEquals(id, result.getId());
     }
 }
