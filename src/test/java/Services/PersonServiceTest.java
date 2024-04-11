@@ -4,6 +4,7 @@ import Mocks.PersonMock;
 import br.com.rest.Domain.Dtos.V1.PersonDto;
 import br.com.rest.Domain.Entities.Person;
 import br.com.rest.Domain.Mapper.PersonParseObjectHelper;
+import br.com.rest.Handler.Exceptions.ResourceNotFoundException;
 import br.com.rest.Repositories.PersonRepository;
 import br.com.rest.Services.Services.PersonService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +17,11 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -60,6 +61,19 @@ public class PersonServiceTest {
     }
 
     @Test
+    void testFindAllWithReturnEmptyList(){
+        //Given
+        when(repository.findAll()).thenReturn(Collections.emptyList());
+
+        //When
+        List<PersonDto> findAllPersons = personService.findAll();
+
+        //Then
+        assertNotNull(findAllPersons);
+        assertTrue(findAllPersons.isEmpty());
+    }
+
+    @Test
     void  testFindById(){
         // Given
         long id = 1L;
@@ -74,4 +88,14 @@ public class PersonServiceTest {
         assertNotNull(result);
         assertEquals(id, result.getId());
     }
+
+    @Test
+    void findByIdNullObject(){
+        //Given
+        long id = 1L;
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            personService.findById(String.valueOf(id));
+        });
+    };
 }
