@@ -13,5 +13,7 @@ public class CORSConfig  implements WebMvcConfigurer {
                     .allowedOrigins("*")
                     .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
                     .allowedHeaders("*");
+                    //.allowCredentials(true); Quando true, não é permitido allowedOrigins para todos
+                    // necessário permissão específica de Origin
     }
 }
