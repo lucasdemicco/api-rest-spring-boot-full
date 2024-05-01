@@ -1,6 +1,6 @@
 package br.com.rest.Config;
 
-import br.com.rest.Security.JwtConfigurer;
+import br.com.rest.Security.JwtTokenFilter;
 import br.com.rest.Security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,11 +10,14 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,8 +50,12 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Actually sets the configurations parameters the application will use, which endpoint user will be able to access, session and such
-        http.sessionManagement(
+        JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider);
+            return http
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                    .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         authorizeHttpRequests -> authorizeHttpRequests
@@ -61,8 +68,6 @@ public class SecurityConfig {
                                 .requestMatchers("/api/**").authenticated()
                                 .requestMatchers("/users").denyAll()
                 )
-                .cors(Customizer.withDefaults())
-                .apply(new JwtConfigurer(jwtTokenProvider));
-        return http.build();
+                .cors(Customizer.withDefaults()).build();
     }
 }

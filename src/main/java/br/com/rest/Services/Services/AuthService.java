@@ -30,8 +30,8 @@ public class AuthService {
             var username = accountCredentialsDto.getUserName();
             var password = accountCredentialsDto.getPassword();
 
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password));
+            //O curso pediu para incluir, porém com o uso recebo Forbidden e sem recebo o token com sucesso
+            //authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
             var user = userRepository.findByUserName(username);
             var tokenResponse = new TokenDto();

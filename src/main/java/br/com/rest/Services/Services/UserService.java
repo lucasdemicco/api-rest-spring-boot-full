@@ -25,12 +25,14 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.info("Iniciando busca de usuário por 'username'");
         var result = repository.findByUserName(username);
+
         if(result == null){
-            final String ERROR_MESSAGE = "usuário não identificado";
-            logger.warning(ERROR_MESSAGE + "com parâmetro: " + username);
+            final String ERROR_MESSAGE = "usuário não identificado com parâmetro: " + username;
+            logger.warning(ERROR_MESSAGE);
             throw new UsernameNotFoundException(ERROR_MESSAGE);
         }
 
+        logger.info("Busca finalizada");
         return result;
     }
 }
