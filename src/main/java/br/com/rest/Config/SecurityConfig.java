@@ -65,7 +65,7 @@ public class SecurityConfig {
                                         "/swagger-ui/**",
                                         "/api-docs/**"
                                 ).permitAll()
-                                .requestMatchers("/api/**").authenticated()
+                                .requestMatchers("/person/**").authenticated()
                                 .requestMatchers("/users").denyAll()
                 )
                 .cors(Customizer.withDefaults()).build();
